@@ -33,6 +33,9 @@ func userHomeDir() string {
 
 
 func Unzip(src, dest string) error {
+    
+  //  DRUMSKLAD_DIR := "drum_sklad-1.0.0"
+    
     dest = filepath.Clean(dest) + string(os.PathSeparator)
 
     r, err := zip.OpenReader(src)
@@ -54,11 +57,19 @@ func Unzip(src, dest string) error {
         if !strings.HasPrefix(path, dest) {
             return fmt.Errorf("%s: illegal file path", path)
         }
+        
+//        if (f.Name == "drum_sklad-1.0.0") {
+ //           path = strings.Replace (path, f.Name, "drum_sklad", 1)
+   //     }
+
+        path = strings.Replace (path, "drum_sklad-1.0.0", "drum_sklad", 1)
+ 
 
         rc, err := f.Open()
         if err != nil {
             return err
         }
+        
         defer func() {
             if err := rc.Close(); err != nil {
                 panic(err)
@@ -66,7 +77,7 @@ func Unzip(src, dest string) error {
         }()
 
         if f.FileInfo().IsDir() {
-            os.MkdirAll(path, f.Mode())
+                os.MkdirAll(path, f.Mode())
         } else {
             os.MkdirAll(filepath.Dir(path), f.Mode())
             f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
@@ -125,37 +136,51 @@ func downloadFile(filepath string, url string) (err error){
 
 func main() {
     
+    fmt.Println ("Drumlabooh Net Installer 6.0.0")
+    
+    
     home_dir, err := os.UserHomeDir()
     if err != nil {
         log.Fatal( err )
     }
     
-    lv2_url := ""
-    vst_url := ""
-    drumkits_url := ""
-    
     fmt.Println ("home_dir:" + home_dir)
     
-    source_path_to_lv2_zip := home_dir + "/labooh_lv2.zip"
-    source_path_to_vst_zip := home_dir + "/labooh_vst.zip"
-    source_path_to_drum_sklad := home_dir + "/drum_sklad.zip"
+    
+    tempdir, err := os.MkdirTemp("", "laboohtempdir")
+
+    if err != nil {
+        log.Fatal( err )
+    }
+    
+    
+    fmt.Println("Temp dir name:", tempdir)
+    
+    lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.lv2.zip"
+    vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.vst3.zip"
+    drumkits_url := "https://github.com/psemiletov/drum_sklad/archive/refs/tags/1.0.0.zip"
+    
+    
+    source_path_to_lv2_zip := tempdir + "/labooh_lv2.zip"
+    source_path_to_vst_zip := tempdir + "/labooh_vst.zip"
+    source_path_to_drum_sklad := tempdir + "/drum_sklad.zip"
     
     
     dest_lv2_path := home_dir + "/.lv2"
     dest_vst_path := home_dir + "/.vst3"
-    dest_drumsklad_path := home_dir + "/drum_sklad"
+//    dest_drumsklad_path := home_dir + "/drum_skladT"
+    dest_drumsklad_path := home_dir;
+  
     
     
     
-    fmt.Println ("Drumlabooh Net Installer")
-    
-    fmt.Println ("Downloading LV2")
+    fmt.Println ("Downloading LV2 to " + source_path_to_lv2_zip)
     downloadFile (source_path_to_lv2_zip, lv2_url)
     
-    fmt.Println ("Downloading VST3i")
-    downloadFile (source_path_to_lv2_zip, vst_url)
+    fmt.Println ("Downloading VST3i to " + source_path_to_vst_zip)
+    downloadFile (source_path_to_vst_zip, vst_url)
         
-    fmt.Println ("Downloading kits")
+    fmt.Println ("Downloading kits to " + source_path_to_drum_sklad)
     downloadFile (source_path_to_drum_sklad, drumkits_url)
     
 
@@ -163,17 +188,18 @@ func main() {
     //downloadFile("5.0.0.zip", "https://github.com/psemiletov/drumlabooh/archive/refs/tags/5.0.0.zip")
     //Unzip("5.0.0.zip", ".lv2/")
 
-    fmt.Println ("Unpacking LV2 to " + source_path_to_vst_zip)
+    fmt.Println ("Unpacking LV2 to " + dest_lv2_path)
     Unzip(source_path_to_lv2_zip, dest_lv2_path)
     
-    fmt.Println ("Unpacking VST3i to " + source_path_to_vst_zip)
+    fmt.Println ("Unpacking VST3i to " + dest_vst_path)
     Unzip(source_path_to_vst_zip, dest_vst_path)
 
-    fmt.Println ("Unpacking drumkits to to " + source_path_to_drum_sklad)
+    fmt.Println ("Unpacking drumkits to to " + dest_drumsklad_path)
     Unzip (source_path_to_drum_sklad, dest_drumsklad_path)
-
-    
+   
     //remove all archives
+    fmt.Println ("Removing temp dir: " + tempdir)
     
+    os.RemoveAll (tempdir)
     
 }
