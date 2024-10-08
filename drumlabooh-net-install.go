@@ -15,6 +15,33 @@ import (
 
 
 
+func read_url_as_string(url string) string {
+	
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return (string(b))
+	
+}
+
+
 func userHomeDir() string {
     if runtime.GOOS == "windows" {
         home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
@@ -136,7 +163,37 @@ func downloadFile(filepath string, url string) (err error){
 
 func main() {
     
-    fmt.Println ("Drumlabooh Net Installer 6.0.0")
+    str, exe_path := os.Executable()
+	
+	if err != nil {
+		log.Fatalln(err)
+	}
+	
+	fmt.Println (exe_path)
+    
+    
+    req, err := http.NewRequest("GET", "https://raw.githubusercontent.com/psemiletov/drumlabooh/refs/heads/main/version.txt", nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+    
+    
+    fmt.Println ("Drumlabooh Net Installer " + string(b))
     
     
     home_dir, err := os.UserHomeDir()
@@ -156,10 +213,12 @@ func main() {
     
     fmt.Println("Temp dir name:", tempdir)
     
-    lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.lv2.zip"
-    vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.vst3.zip"
-    drumkits_url := "https://github.com/psemiletov/drum_sklad/archive/refs/tags/1.0.0.zip"
+//    lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.lv2.zip"
+//    vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.vst3.zip"
     
+    lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + string(b) + "/drumlabooh.lv2.zip"
+    vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + string(b) + "/drumlabooh.vst3.zip"
+    drumkits_url := "https://github.com/psemiletov/drum_sklad/archive/refs/tags/1.0.0.zip"
     
     source_path_to_lv2_zip := tempdir + "/labooh_lv2.zip"
     source_path_to_vst_zip := tempdir + "/labooh_vst.zip"
