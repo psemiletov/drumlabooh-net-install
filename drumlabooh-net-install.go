@@ -165,7 +165,7 @@ func downloadFile(filepath string, url string) (err error){
 
 func main() {
     
-    VER_LOCAL :="6" 
+    VER_LOCAL :="1" 
     
      
     
