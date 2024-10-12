@@ -5,6 +5,7 @@ import (
     "fmt"
     "os"
     "net/http"
+    //"strconv"
     "io"
     "log"
     "runtime"
@@ -59,7 +60,7 @@ func userHomeDir() string {
 }
 
 
-func Unzip(src, dest string) error {
+func Unzip(src, dest, ver string) error {
     
   //  DRUMSKLAD_DIR := "drum_sklad-1.0.0"
     
@@ -89,7 +90,7 @@ func Unzip(src, dest string) error {
  //           path = strings.Replace (path, f.Name, "drum_sklad", 1)
    //     }
 
-        path = strings.Replace (path, "drum_sklad-1.0.0", "drum_sklad", 1)
+        path = strings.Replace (path, "drum_sklad-" + ver, "drum_sklad", 1)
  
 
         rc, err := f.Open()
@@ -135,6 +136,7 @@ func Unzip(src, dest string) error {
     return nil
 }
 
+
 func downloadFile(filepath string, url string) (err error){
 
   // Create the file
@@ -163,15 +165,76 @@ func downloadFile(filepath string, url string) (err error){
 
 func main() {
     
-    str, exe_path := os.Executable()
-	
-	if err != nil {
-		log.Fatalln(err)
-	}
-	
-	fmt.Println (exe_path)
+    VER_LOCAL :="6" 
     
+     
     
+    var arg string
+    
+    if len(os.Args) == 2 {
+        arg = os.Args[1]
+        //fmt.Println ("AAAAAAAAAAAA")
+        
+    }   
+    
+    flag_test := false
+    
+    if (arg == "test"){
+        flag_test = true
+        fmt.Println ("TEST")
+    }    
+	//fmt.Println (exe_path)
+    
+    ver_remote := read_url_as_string ("https://raw.githubusercontent.com/psemiletov/drumlabooh-net-install/refs/heads/main/version.txt")
+    
+ /*   version_remote, err := strconv.Atoi(ver_remote)
+    if err != nil {
+        // ... handle error
+        panic(err)
+    } 
+   */ 
+ 
+ 
+    
+    if (ver_remote == VER_LOCAL){
+        fmt.Println ("Installer version is up-to-date")
+    } else {
+            fmt.Println ("Installer is updating... Wait")
+        
+            exe_path, err := os.Executable()
+
+            fmt.Println (exe_path)
+
+    
+   	        if err != nil {
+	  	       log.Fatalln(err)
+	        }
+	
+        
+           fmt.Println ("Done")
+           fmt.Println ("Please restart Installer")
+        
+           return
+    }
+        
+    
+ //   source_path_to_binary := ""
+ //   binary_url := ""
+   /*
+    if (ver_remote > VER_LOCAL){
+        
+        //update binary
+        fmt.Println ("We need to update the binary") 
+        //Dowloading 
+         // downloadFile (source_path_to_lv2_zip, lv2_url)
+        
+        //exit
+        return
+    }    
+     */      
+           
+    
+    /*
     req, err := http.NewRequest("GET", "https://raw.githubusercontent.com/psemiletov/drumlabooh/refs/heads/main/version.txt", nil)
 	if err != nil {
 		log.Fatalln(err)
@@ -191,9 +254,9 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+    */
     
-    
-    fmt.Println ("Drumlabooh Net Installer " + string(b))
+    fmt.Println ("Drumlabooh Net Installer " + VER_LOCAL)
     
     
     home_dir, err := os.UserHomeDir()
@@ -213,12 +276,25 @@ func main() {
     
     fmt.Println("Temp dir name:", tempdir)
     
+    labooh_ver := read_url_as_string ("https://raw.githubusercontent.com/psemiletov/drumlabooh/refs/heads/main/version.txt")
+    kits_ver := read_url_as_string ("https://raw.githubusercontent.com/psemiletov/drum_sklad/refs/heads/main/version.txt")
+
+    fmt.Println ("Install/update Drumlabooh v.", labooh_ver)
+    
+    
+    
+    
 //    lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.lv2.zip"
 //    vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/6.0.0/drumlabooh.vst3.zip"
     
-    lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + string(b) + "/drumlabooh.lv2.zip"
-    vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + string(b) + "/drumlabooh.vst3.zip"
-    drumkits_url := "https://github.com/psemiletov/drum_sklad/archive/refs/tags/1.0.0.zip"
+    //lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + string(b) + "/drumlabooh.lv2.zip"
+    //vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + string(b) + "/drumlabooh.vst3.zip"
+    
+    lv2_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + labooh_ver + "/drumlabooh.lv2.zip"
+    vst_url := "https://github.com/psemiletov/drumlabooh/releases/download/" + labooh_ver + "/drumlabooh.vst3.zip"
+    
+    
+    drumkits_url := "https://github.com/psemiletov/drum_sklad/archive/refs/tags/"+ kits_ver + ".zip"
     
     source_path_to_lv2_zip := tempdir + "/labooh_lv2.zip"
     source_path_to_vst_zip := tempdir + "/labooh_vst.zip"
@@ -234,27 +310,42 @@ func main() {
     
     
     fmt.Println ("Downloading LV2 to " + source_path_to_lv2_zip)
-    downloadFile (source_path_to_lv2_zip, lv2_url)
+    if (! flag_test){
+        downloadFile (source_path_to_lv2_zip, lv2_url)
+    } 
     
     fmt.Println ("Downloading VST3i to " + source_path_to_vst_zip)
-    downloadFile (source_path_to_vst_zip, vst_url)
-        
-    fmt.Println ("Downloading kits to " + source_path_to_drum_sklad)
-    downloadFile (source_path_to_drum_sklad, drumkits_url)
-    
+    if (! flag_test){
+        downloadFile (source_path_to_vst_zip, vst_url)
+    } 
+
+     fmt.Println ("Downloading kits to " + source_path_to_drum_sklad)
+
+    if (! flag_test){
+       downloadFile (source_path_to_drum_sklad, drumkits_url)
+    }   
 
     
     //downloadFile("5.0.0.zip", "https://github.com/psemiletov/drumlabooh/archive/refs/tags/5.0.0.zip")
     //Unzip("5.0.0.zip", ".lv2/")
 
     fmt.Println ("Unpacking LV2 to " + dest_lv2_path)
-    Unzip(source_path_to_lv2_zip, dest_lv2_path)
+
+    if (! flag_test){
+         Unzip(source_path_to_lv2_zip, dest_lv2_path, kits_ver)
+    } 
     
     fmt.Println ("Unpacking VST3i to " + dest_vst_path)
-    Unzip(source_path_to_vst_zip, dest_vst_path)
+    
+    if (! flag_test){
+        Unzip(source_path_to_vst_zip, dest_vst_path, kits_ver)
+    } 
 
     fmt.Println ("Unpacking drumkits to to " + dest_drumsklad_path)
-    Unzip (source_path_to_drum_sklad, dest_drumsklad_path)
+
+    if (! flag_test){
+       Unzip (source_path_to_drum_sklad, dest_drumsklad_path, kits_ver)
+    }
    
     //remove all archives
     fmt.Println ("Removing temp dir: " + tempdir)
