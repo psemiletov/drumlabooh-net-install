@@ -16,7 +16,7 @@ import (
 
 
 
-func read_url_as_string(url string) string {
+func read_url_as_string (url string) string {
 	
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -60,7 +60,7 @@ func userHomeDir() string {
 }
 
 
-func Unzip(src, dest, ver string) error {
+func Unzip (src, dest, ver string) error {
     
   //  DRUMSKLAD_DIR := "drum_sklad-1.0.0"
     
@@ -92,7 +92,6 @@ func Unzip(src, dest, ver string) error {
 
         path = strings.Replace (path, "drum_sklad-" + ver, "drum_sklad", 1)
  
-
         rc, err := f.Open()
         if err != nil {
             return err
