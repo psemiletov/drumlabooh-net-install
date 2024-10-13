@@ -340,7 +340,7 @@ func main() {
         Unzip(source_path_to_vst_zip, dest_vst_path, kits_ver)
     } 
 
-    fmt.Println ("Unpacking drumkits to to " + dest_drumsklad_path)
+    fmt.Println ("Unpacking drumkits to subdir drum_sklad at " + dest_drumsklad_path + "/drum_sklad")
 
     if (! flag_test){
        Unzip (source_path_to_drum_sklad, dest_drumsklad_path, kits_ver)
