@@ -22,3 +22,9 @@ jobs:
 
 #    - name: Test
 #      run: go test -v ./...
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v3
+      with:
+       name: drumlabooh-net-install
+       path: ${{github.workspace}}/drumlabooh-net-install
