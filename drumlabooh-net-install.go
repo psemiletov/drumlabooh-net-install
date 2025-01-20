@@ -6,6 +6,7 @@ import (
     "os"
     "net/http"
     //"strconv"
+    "os/user"
     "io"
     "log"
     "runtime"
@@ -159,19 +160,35 @@ func downloadFile (filepath string, url string) (err error) {
 }
 
 
+func isRoot() bool { 
+    currentUser, err := user.Current() 
+    
+    if err != nil { log.Fatalf("[isRoot] Unable to get current user: %s", err) } 
+    return currentUser.Username == "root"  
+}    
+    //{ fmt.Printf("Am I root? %v", isRoot())
+    
+
 func main() {
     
     VER_LOCAL :="1" 
     
-     
+    if isRoot() {
+        fmt.Println ("Please run as non-root")
+        return
+    }
+        
     
     var arg string
     
     if len(os.Args) == 2 {
         arg = os.Args[1]
         //fmt.Println ("AAAAAAAAAAAA")
-        
     }   
+    
+
+    
+    
     
     flag_test := false
     
