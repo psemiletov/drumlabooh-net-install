@@ -270,6 +270,12 @@ func main() {
     
     drumkits_url := "https://github.com/psemiletov/drum_sklad/archive/refs/tags/"+ kits_ver + ".zip"
     
+    fmt.Println ("drumkits_url: " + drumkits_url)
+    fmt.Println ("lv2_url: " + lv2_url)
+    fmt.Println ("vst_url: " + vst_url)
+    
+    
+    
     source_path_to_lv2_zip := tempdir + "/labooh_lv2.zip"
     source_path_to_vst_zip := tempdir + "/labooh_vst.zip"
     source_path_to_drum_sklad := tempdir + "/drum_sklad.zip"
