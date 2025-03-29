@@ -171,7 +171,7 @@ func isRoot() bool {
 
 func main() {
     
-    VER_LOCAL :="1" 
+    VER_LOCAL :="2" 
     
     if isRoot() {
         fmt.Println ("Please run as non-root")
@@ -198,7 +198,7 @@ func main() {
     }    
 	//fmt.Println (exe_path)
     
-    ver_remote := read_url_as_string ("https://raw.githubusercontent.com/psemiletov/drumlabooh-net-install/refs/heads/main/version.txt")
+//    ver_remote := read_url_as_string ("https://raw.githubusercontent.com/psemiletov/drumlabooh-net-install/refs/heads/main/version.txt")
     
  /*   version_remote, err := strconv.Atoi(ver_remote)
     if err != nil {
@@ -208,7 +208,7 @@ func main() {
    */ 
  
  
-    
+ /*   
     if (ver_remote == VER_LOCAL){
         fmt.Println ("Installer version is up-to-date")
     } else {
@@ -236,7 +236,7 @@ func main() {
            return
          }
         
-
+*/
         
     fmt.Println ("Drumlabooh Net Installer " + VER_LOCAL)
     
