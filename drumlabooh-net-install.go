@@ -78,7 +78,10 @@ func Unzip (src, dest, ver string) error {
         }
     }()
 
-    os.MkdirAll (dest, 0755)
+    //os.MkdirAll (dest, 0755)
+    os.MkdirAll (dest, os.ModePerm)
+    
+    
 
     // Closure to address file descriptors issue with all the deferred .Close() methods
     extractAndWriteFile := func(f *zip.File) error {
@@ -102,9 +105,13 @@ func Unzip (src, dest, ver string) error {
         }()
 
         if f.FileInfo().IsDir() {
-                os.MkdirAll (path, f.Mode())
+//                os.MkdirAll (path, f.Mode())
+            os.MkdirAll (path, os.ModePerm)
+            
+
         } else {
-            os.MkdirAll (filepath.Dir(path), f.Mode())
+            os.MkdirAll (filepath.Dir(path), os.ModePerm)
+            
             f, err := os.OpenFile (path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
             if err != nil {
                 return err
@@ -171,7 +178,7 @@ func isRoot() bool {
 
 func main() {
     
-    VER_LOCAL :="2" 
+    VER_LOCAL :="3" 
     
     if isRoot() {
         fmt.Println ("Please run as non-root")
@@ -185,9 +192,6 @@ func main() {
         arg = os.Args[1]
         //fmt.Println ("AAAAAAAAAAAA")
     }   
-    
-
-    
     
     
     flag_test := false
@@ -306,12 +310,16 @@ func main() {
     //downloadFile("5.0.0.zip", "https://github.com/psemiletov/drumlabooh/archive/refs/tags/5.0.0.zip")
     //Unzip("5.0.0.zip", ".lv2/")
 
+    fmt.Println ("Unpacking LV2 from " + source_path_to_lv2_zip)
     fmt.Println ("Unpacking LV2 to " + dest_lv2_path)
+       
+    
 
     if (! flag_test){
          Unzip (source_path_to_lv2_zip, dest_lv2_path, kits_ver)
     } 
     
+    fmt.Println ("Unpacking VST3i from " + source_path_to_vst_zip)
     fmt.Println ("Unpacking VST3i to " + dest_vst_path)
     
     if (! flag_test){
