@@ -8,6 +8,6 @@ If Drumlabooh and its kits were been previously installed system-wide, please re
 
 * Статически собранный установщик-обновлялка для драм машины [Drumlabooh](https://psemiletov.github.io/drumlabooh/).
 
-Будучи запущенным из-под обычного пользователя (не под рутом), устанавливает последнюю версию плагина  (в $HOME/username/.lv2 and /.vst3) в драмиктов (в $HOME/username/.drum_sklad).
+Будучи запущенным из-под обычного пользователя (не под рутом), устанавливает последнюю версию плагина  (в $HOME/username/.lv2 and /.vst3) в драмиктов (в $HOME/username/drum_sklad).
 
 Если Drumlabooh и киты были установлены раньше и общесистемно, лучше удалите их перед запуском сетевого установщика, чтобы избежать дублирования плагина и китов.
