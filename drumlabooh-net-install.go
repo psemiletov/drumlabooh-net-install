@@ -256,9 +256,9 @@ func main() {
     dest_drumsklad_path := home_dir
     
     if (flag_test){
-        dest_lv2_path := dest_lv2_path + "TEST" 
-        dest_vst_path := dest_vst_path + "TEST"
-        dest_drumsklad_path := "/STEST"
+        dest_lv2_path = dest_lv2_path + "TEST" 
+        dest_vst_path = dest_vst_path + "TEST"
+        dest_drumsklad_path = "/STEST"
     }
     
     
